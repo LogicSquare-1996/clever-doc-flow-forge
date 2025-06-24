@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Handshake, Shield, Users, Receipt, Building, Briefcase, PresentationChart } from 'lucide-react';
+import { FileText, Handshake, Shield, Users, Receipt, Building, Briefcase, Presentation } from 'lucide-react';
 import { DocumentType } from '@/pages/Index';
 
 const documentTypes: DocumentType[] = [
@@ -132,7 +132,7 @@ const iconMap = {
   users: Users,
   filetext: FileText,
   receipt: Receipt,
-  presentation: PresentationChart,
+  presentation: Presentation,
   handshake: Handshake,
 };
 
