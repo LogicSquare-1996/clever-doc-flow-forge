@@ -81,7 +81,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 flex flex-col">
       <Header isAuthenticated={isAuthenticated} onAuthClick={() => setShowAuthModal(true)} />
       
       <main className="flex-1 container mx-auto px-4 py-8">

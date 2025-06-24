@@ -3,16 +3,20 @@ import { FileText, Mail, Phone, MapPin } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-8 w-8 text-blue-400" />
-              <h3 className="text-xl font-bold">DocuGen AI</h3>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg">
+                <FileText className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                DocuGen AI
+              </h3>
             </div>
-            <p className="text-gray-400">
+            <p className="text-gray-300 leading-relaxed">
               Professional document generation powered by artificial intelligence. 
               Create legally compliant documents in minutes.
             </p>
@@ -20,47 +24,47 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Document Types</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">How it Works</a></li>
+            <h4 className="text-lg font-semibold text-purple-300">Quick Links</h4>
+            <ul className="space-y-2 text-gray-300">
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Home</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Document Types</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">How it Works</a></li>
             </ul>
           </div>
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Legal</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Disclaimer</a></li>
+            <h4 className="text-lg font-semibold text-purple-300">Legal</h4>
+            <ul className="space-y-2 text-gray-300">
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Cookie Policy</a></li>
+              <li><a href="#" className="hover:text-purple-300 transition-colors">Disclaimer</a></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Contact Us</h4>
-            <div className="space-y-3 text-gray-400">
+            <h4 className="text-lg font-semibold text-purple-300">Contact Us</h4>
+            <div className="space-y-3 text-gray-300">
               <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
+                <Mail className="h-4 w-4 text-purple-400" />
                 <span>support@docugen.ai</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
+                <Phone className="h-4 w-4 text-purple-400" />
                 <span>+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4" />
+                <MapPin className="h-4 w-4 text-purple-400" />
                 <span>San Francisco, CA</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
           <p>&copy; 2024 DocuGen AI. All rights reserved. Made with ❤️ for professionals everywhere.</p>
         </div>
       </div>

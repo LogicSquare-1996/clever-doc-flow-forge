@@ -144,10 +144,10 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
   return (
     <div className="max-w-7xl mx-auto">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6">
           AI-Powered Document Generator
         </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
           Create professional, legally compliant documents in minutes. Choose from our comprehensive 
           collection of templates and let AI customize them for your specific needs.
         </p>
@@ -160,26 +160,28 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
           return (
             <Card 
               key={doc.id} 
-              className="hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 border-2 hover:border-blue-300"
+              className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border-2 hover:border-purple-300 gradient-card backdrop-blur-sm"
               onClick={() => onSelect(doc)}
             >
               <CardHeader>
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <IconComponent className="h-6 w-6 text-blue-600" />
+                  <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg group-hover:shadow-purple-200 transition-shadow">
+                    <IconComponent className="h-6 w-6 text-white" />
                   </div>
-                  <CardTitle className="text-lg font-semibold">{doc.name}</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-gray-800 group-hover:text-purple-700 transition-colors">
+                    {doc.name}
+                  </CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                <CardDescription className="text-sm text-gray-600 leading-relaxed mb-4">
                   {doc.description}
                 </CardDescription>
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-gray-500">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                     {doc.questions.length} questions
                   </span>
-                  <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
+                  <span className="text-xs px-3 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 rounded-full font-medium">
                     {doc.signatureRequired === 'dual' ? '2 Signatures' : 
                      doc.signatureRequired === 'single' ? '1 Signature' : 'No Signature'}
                   </span>
