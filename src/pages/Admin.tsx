@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings, X } from 'lucide-react';
+import { FaHome, FaBriefcase, FaShieldAlt, FaUsers, FaFileContract, FaCalculator, FaPresentationChartLine, FaFileInvoiceDollar } from 'react-icons/fa';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DocumentType, Question } from './Index';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -19,7 +19,6 @@ interface DocumentTypeForm {
   icon: string;
   price: string;
   category: string;
-  colorTheme: string;
   signatureRequired: 'single' | 'dual' | 'none';
   questions: Question[];
 }
@@ -29,7 +28,7 @@ const mockDocumentTypes: DocumentType[] = [
     id: '1',
     name: 'NDA',
     description: 'Non-Disclosure Agreement',
-    icon: 'lock',
+    icon: 'FaShieldAlt',
     questions: [
       { id: '1', text: 'Company Name', type: 'text', required: true },
       { id: '2', text: 'Counterparty Name', type: 'text', required: true },
@@ -40,13 +39,25 @@ const mockDocumentTypes: DocumentType[] = [
     id: '2',
     name: 'Employment Agreement',
     description: 'Agreement for new employees',
-    icon: 'user',
+    icon: 'FaBriefcase',
     questions: [
       { id: '3', text: 'Employee Name', type: 'text', required: true },
       { id: '4', text: 'Job Title', type: 'text', required: true },
     ],
     signatureRequired: 'dual',
   },
+];
+
+// Available icons for document types
+const availableIcons = [
+  { name: 'FaHome', icon: FaHome, label: 'Rent Agreement' },
+  { name: 'FaBriefcase', icon: FaBriefcase, label: 'Offer Letter' },
+  { name: 'FaShieldAlt', icon: FaShieldAlt, label: 'Non-Disclosure Agreement' },
+  { name: 'FaUsers', icon: FaUsers, label: 'Founders Agreement' },
+  { name: 'FaFileContract', icon: FaFileContract, label: 'Employment Contract' },
+  { name: 'FaCalculator', icon: FaCalculator, label: 'Freelance Invoice' },
+  { name: 'FaPresentationChartLine', icon: FaPresentationChartLine, label: 'Pitch Deck Outline' },
+  { name: 'FaFileInvoiceDollar', icon: FaFileInvoiceDollar, label: 'GST Registration Support' },
 ];
 
 const Admin = () => {
@@ -59,7 +70,6 @@ const Admin = () => {
     icon: '',
     price: '',
     category: '',
-    colorTheme: 'blue-to-purple',
     signatureRequired: 'none',
     questions: [],
   });
@@ -114,7 +124,6 @@ const Admin = () => {
       icon: '',
       price: '',
       category: '',
-      colorTheme: 'blue-to-purple',
       signatureRequired: 'none',
       questions: [],
     });
@@ -129,7 +138,6 @@ const Admin = () => {
       icon: documentType.icon,
       price: '',
       category: '',
-      colorTheme: 'blue-to-purple',
       signatureRequired: documentType.signatureRequired,
       questions: documentType.questions,
     });
@@ -174,6 +182,9 @@ const Admin = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <p><strong>Admin:</strong> admin@docugen.ai / admin123</p>
+              </div>
               <ThemeToggle />
               <Button 
                 onClick={() => window.location.href = '/'}
@@ -273,7 +284,7 @@ const Admin = () => {
                       id="title"
                       value={formValues.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3"
                       placeholder="Enter document title"
                       required
                     />
@@ -286,7 +297,7 @@ const Admin = () => {
                       id="price"
                       value={formValues.price}
                       onChange={(e) => handleInputChange('price', e.target.value)}
-                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3"
                       placeholder="Free"
                     />
                   </div>
@@ -298,18 +309,18 @@ const Admin = () => {
                     id="description"
                     value={formValues.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3"
                     placeholder="Enter document description"
                     rows={3}
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="category" className="text-gray-700 dark:text-gray-300">Category</Label>
                     <Select value={formValues.category} onValueChange={(value) => handleInputChange('category', value)}>
-                      <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                      <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-3">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -321,20 +332,35 @@ const Admin = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="colorTheme" className="text-gray-700 dark:text-gray-300">Color Theme</Label>
-                    <Select value={formValues.colorTheme} onValueChange={(value) => handleInputChange('colorTheme', value)}>
-                      <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                        <SelectValue placeholder="Select color theme" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="blue-to-purple">Blue to Purple</SelectItem>
-                        <SelectItem value="green-to-blue">Green to Blue</SelectItem>
-                        <SelectItem value="orange-to-red">Orange to Red</SelectItem>
-                        <SelectItem value="purple-to-pink">Purple to Pink</SelectItem>
-                      </SelectContent>
-                    </Select>
+                {/* Icon Selection */}
+                <div className="space-y-4">
+                  <Label className="text-gray-700 dark:text-gray-300">Select Icon</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {availableIcons.map((iconItem) => {
+                      const IconComponent = iconItem.icon;
+                      return (
+                        <div
+                          key={iconItem.name}
+                          className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-400 ${
+                            formValues.icon === iconItem.name
+                              ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                              : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800'
+                          }`}
+                          onClick={() => handleInputChange('icon', iconItem.name)}
+                        >
+                          <div className="flex flex-col items-center space-y-2">
+                            <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl">
+                              <IconComponent className="h-6 w-6 text-white" />
+                            </div>
+                            <span className="text-xs text-center text-gray-600 dark:text-gray-400">
+                              {iconItem.label}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -358,6 +384,7 @@ const Admin = () => {
                   </div>
                 </div>
 
+                {/* Questions Section - Keep existing code */}
                 <div className="space-y-4">
                   <Label className="text-gray-700 dark:text-gray-300">Questions</Label>
                   
@@ -371,7 +398,7 @@ const Admin = () => {
                         value={newQuestion.text}
                         onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
                         placeholder="Enter question text"
-                        className="bg-white dark:bg-gray-700"
+                        className="bg-white dark:bg-gray-700 px-4 py-3"
                       />
                     </div>
 
@@ -379,7 +406,7 @@ const Admin = () => {
                       <div className="space-y-2">
                         <Label className="text-gray-600 dark:text-gray-400">Question Type</Label>
                         <Select value={newQuestion.type} onValueChange={(value: any) => setNewQuestion({...newQuestion, type: value})}>
-                          <SelectTrigger className="bg-white dark:bg-gray-700">
+                          <SelectTrigger className="bg-white dark:bg-gray-700 px-4 py-3">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
