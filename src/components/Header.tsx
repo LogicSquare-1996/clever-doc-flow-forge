@@ -13,6 +13,10 @@ export const Header = ({ isAuthenticated, onAuthClick }: HeaderProps) => {
     window.location.href = '/';
   };
 
+  const handleProfileClick = () => {
+    window.location.href = '/dashboard';
+  };
+
   return (
     <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-purple-100 dark:border-gray-700 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -42,7 +46,10 @@ export const Header = ({ isAuthenticated, onAuthClick }: HeaderProps) => {
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             {isAuthenticated ? (
-              <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-lg">
+              <div 
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={handleProfileClick}
+              >
                 <User className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 <span className="text-purple-700 dark:text-purple-300 font-medium">Profile</span>
               </div>

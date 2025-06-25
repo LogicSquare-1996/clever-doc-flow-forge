@@ -15,6 +15,14 @@ const Dashboard = () => {
   const [filterType, setFilterType] = useState('all');
 
   // Mock user data - replace with real data from your backend
+  const userInfo = {
+    name: 'Google User',
+    email: 'user@gmail.com',
+    planType: 'FREE',
+    joinDate: '2024-01-01',
+    avatar: 'G'
+  };
+
   const userStats = {
     totalDocuments: 12,
     totalDownloads: 34,
@@ -86,13 +94,28 @@ const Dashboard = () => {
       <Header isAuthenticated={isAuthenticated} onAuthClick={() => {}} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
+        {/* Welcome Section with User Profile */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Welcome to your Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your documents and track your activity
-          </p>
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-6 text-white mb-6">
+            <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+            <p className="text-purple-100 mb-4">Welcome back, {userInfo.name}</p>
+            
+            <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-2xl font-bold text-white">
+                {userInfo.avatar}
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">{userInfo.name}</h2>
+                <p className="text-purple-100">{userInfo.email}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    {userInfo.planType}
+                  </span>
+                  <span className="text-purple-100 text-sm">Member since {userInfo.joinDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="overview" className="w-full">
