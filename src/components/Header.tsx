@@ -9,11 +9,18 @@ interface HeaderProps {
 }
 
 export const Header = ({ isAuthenticated, onAuthClick }: HeaderProps) => {
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  };
+
   return (
     <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-purple-100 dark:border-gray-700 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div 
+            className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleLogoClick}
+          >
             <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg">
               <FileText className="h-8 w-8 text-white" />
             </div>
@@ -26,6 +33,9 @@ export const Header = ({ isAuthenticated, onAuthClick }: HeaderProps) => {
             <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Features</a>
             <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Pricing</a>
             <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">About</a>
+            {isAuthenticated && (
+              <a href="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Dashboard</a>
+            )}
             <a href="/admin" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Admin</a>
           </nav>
           

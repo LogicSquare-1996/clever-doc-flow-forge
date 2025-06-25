@@ -1,11 +1,14 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { Plus, Edit, Trash2, FileText, ArrowLeft } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DocumentType, Question } from './Index';
+import AdminDashboard from '@/components/AdminDashboard';
 
 interface DocumentTypeForm {
   name: string;
@@ -87,14 +90,12 @@ const Admin = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedDocument) {
-      // Update existing document type
       setDocumentTypes(
         documentTypes.map((doc) =>
           doc.id === selectedDocument.id ? { ...doc, ...formValues } : doc
         )
       );
     } else {
-      // Create new document type (in real app, generate a unique ID)
       const newDocumentType: DocumentType = {
         id: String(Date.now()),
         ...formValues,
@@ -136,49 +137,68 @@ const Admin = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-            Document Types
-          </h2>
-          <Button onClick={handleAddDocumentType}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Document Type
-          </Button>
-        </div>
+        <Tabs defaultValue="dashboard" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="dashboard" className="flex items-center space-x-2">
+              <BarChart3 className="h-4 w-4" />
+              <span>Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="flex items-center space-x-2">
+              <Settings className="h-4 w-4" />
+              <span>Manage Documents</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Document Type List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {documentTypes.map((documentType) => (
-            <Card key={documentType.id} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
-              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {documentType.name}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                {documentType.description}
-              </p>
-              <div className="flex justify-end mt-4 space-x-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleEditDocumentType(documentType)}
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteDocumentType(documentType.id)}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+          <TabsContent value="dashboard">
+            <AdminDashboard />
+          </TabsContent>
 
-        {/* Form */}
+          <TabsContent value="documents">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                Document Types
+              </h2>
+              <Button onClick={handleAddDocumentType}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Document Type
+              </Button>
+            </div>
+
+            {/* Document Type List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {documentTypes.map((documentType) => (
+                <Card key={documentType.id} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
+                  <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    {documentType.name}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {documentType.description}
+                  </p>
+                  <div className="flex justify-end mt-4 space-x-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleEditDocumentType(documentType)}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeleteDocumentType(documentType.id)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Form Modal */}
         {showForm && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
             <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white dark:bg-gray-900">
@@ -187,40 +207,43 @@ const Admin = () => {
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Name</Label>
                   <Input
                     type="text"
                     id="name"
                     name="name"
                     value={formValues.name}
                     onChange={handleInputChange}
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description" className="text-gray-700 dark:text-gray-300">Description</Label>
                   <Input
                     type="text"
                     id="description"
                     name="description"
                     value={formValues.description}
                     onChange={handleInputChange}
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="icon">Icon</Label>
+                  <Label htmlFor="icon" className="text-gray-700 dark:text-gray-300">Icon</Label>
                   <Input
                     type="text"
                     id="icon"
                     name="icon"
                     value={formValues.icon}
                     onChange={handleInputChange}
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="signatureRequired">Signature Required</Label>
+                  <Label htmlFor="signatureRequired" className="text-gray-700 dark:text-gray-300">Signature Required</Label>
                   <select
                     id="signatureRequired"
                     name="signatureRequired"
