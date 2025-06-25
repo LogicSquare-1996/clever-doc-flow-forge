@@ -1,16 +1,17 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Eye, RotateCcw, Lock } from 'lucide-react';
+import { Download, Eye, RotateCcw, Lock, Loader2 } from 'lucide-react';
 
 interface DocumentPreviewProps {
   content: string;
   onDownload: () => void;
   onBack: () => void;
   isAuthenticated: boolean;
+  isGenerating?: boolean;
 }
 
-export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }: DocumentPreviewProps) => {
+export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, isGenerating = false }: DocumentPreviewProps) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
@@ -28,13 +29,23 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
               <CardTitle className="flex items-center space-x-2">
                 <Eye className="h-5 w-5" />
                 <span>Generated Document</span>
+                {isGenerating && <Loader2 className="h-4 w-4 animate-spin" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="bg-white border rounded-lg p-8 min-h-96 shadow-inner">
                 <div className="prose max-w-none">
                   <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
-                    {content}
+                    {isGenerating ? (
+                      <div className="flex items-center justify-center h-48">
+                        <div className="text-center">
+                          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
+                          <p className="text-gray-600">Generating your document...</p>
+                        </div>
+                      </div>
+                    ) : (
+                      content
+                    )}
                   </div>
                 </div>
               </div>
@@ -56,6 +67,7 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
                     onClick={onDownload} 
                     className="w-full flex items-center space-x-2"
                     size="lg"
+                    disabled={isGenerating}
                   >
                     <Download className="h-5 w-5" />
                     <span>Download PDF</span>
@@ -64,6 +76,7 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
                     onClick={onDownload} 
                     variant="outline" 
                     className="w-full flex items-center space-x-2"
+                    disabled={isGenerating}
                   >
                     <Download className="h-5 w-5" />
                     <span>Download Word</span>
@@ -84,6 +97,7 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
                     onClick={onDownload} 
                     className="w-full"
                     size="lg"
+                    disabled={isGenerating}
                   >
                     Sign In to Download
                   </Button>
@@ -108,7 +122,9 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Status:</span>
-                <span className="font-medium text-green-600">Ready</span>
+                <span className={`font-medium ${isGenerating ? 'text-orange-600' : 'text-green-600'}`}>
+                  {isGenerating ? 'Generating...' : 'Ready'}
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -123,6 +139,7 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated }
                 variant="outline" 
                 onClick={onBack} 
                 className="w-full flex items-center space-x-2"
+                disabled={isGenerating}
               >
                 <RotateCcw className="h-4 w-4" />
                 <span>Create New Document</span>
