@@ -15,14 +15,6 @@ interface DocumentTypeForm {
   questions: Question[];
 }
 
-interface Question {
-  id: string;
-  text: string;
-  type: 'text' | 'textarea' | 'select' | 'date' | 'number';
-  options?: string[];
-  required: boolean;
-}
-
 const mockDocumentTypes: DocumentType[] = [
   {
     id: '1',
