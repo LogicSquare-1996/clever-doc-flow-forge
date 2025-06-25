@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings, X } from 'lucide-react';
-import { FaHome, FaBriefcase, FaShieldAlt, FaUsers, FaFileContract, FaCalculator, FaPresentationChartLine, FaFileInvoiceDollar } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaShieldAlt, FaUsers, FaFileContract, FaCalculator, FaChartLine, FaFileInvoiceDollar } from 'react-icons/fa';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DocumentType, Question } from './Index';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -56,7 +57,7 @@ const availableIcons = [
   { name: 'FaUsers', icon: FaUsers, label: 'Founders Agreement' },
   { name: 'FaFileContract', icon: FaFileContract, label: 'Employment Contract' },
   { name: 'FaCalculator', icon: FaCalculator, label: 'Freelance Invoice' },
-  { name: 'FaPresentationChartLine', icon: FaPresentationChartLine, label: 'Pitch Deck Outline' },
+  { name: 'FaChartLine', icon: FaChartLine, label: 'Pitch Deck Outline' },
   { name: 'FaFileInvoiceDollar', icon: FaFileInvoiceDollar, label: 'GST Registration Support' },
 ];
 
