@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings, X } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings, X, User } from 'lucide-react';
 import { FaHome, FaBriefcase, FaShieldAlt, FaUsers, FaFileContract, FaCalculator, FaChartLine, FaFileInvoiceDollar } from 'react-icons/fa';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DocumentType, Question } from './Index';
@@ -167,6 +166,15 @@ const Admin = () => {
     setShowForm(false);
   };
 
+  // Admin user data
+  const adminInfo = {
+    name: 'Admin User',
+    email: 'admin@docugen.ai',
+    planType: 'ADMIN',
+    joinDate: '2023-01-01',
+    avatar: 'A'
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20 transition-colors">
       {/* Header */}
@@ -183,9 +191,6 @@ const Admin = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                <p><strong>Admin:</strong> admin@docugen.ai / admin123</p>
-              </div>
               <ThemeToggle />
               <Button 
                 onClick={() => window.location.href = '/'}
@@ -202,8 +207,32 @@ const Admin = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Welcome Section with Admin Profile */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-6 text-white mb-6">
+            <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+            <p className="text-purple-100 mb-4">Welcome back, {adminInfo.name}</p>
+            
+            <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-2xl font-bold text-white">
+                {adminInfo.avatar}
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">{adminInfo.name}</h2>
+                <p className="text-purple-100">{adminInfo.email}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    {adminInfo.planType}
+                  </span>
+                  <span className="text-purple-100 text-sm">Admin since {adminInfo.joinDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <BarChart3 className="h-4 w-4" />
               <span>Dashboard</span>
@@ -211,6 +240,10 @@ const Admin = () => {
             <TabsTrigger value="documents" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
               <span>Manage Documents</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="flex items-center space-x-2">
+              <User className="h-4 w-4" />
+              <span>Admin Profile</span>
             </TabsTrigger>
           </TabsList>
 
@@ -261,9 +294,64 @@ const Admin = () => {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="profile">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Admin Profile Information</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName" className="text-gray-700 dark:text-gray-300">First Name</Label>
+                      <Input id="firstName" defaultValue="Admin" />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName" className="text-gray-700 dark:text-gray-300">Last Name</Label>
+                      <Input id="lastName" defaultValue="User" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
+                    <Input id="email" type="email" defaultValue="admin@docugen.ai" />
+                  </div>
+                  <div>
+                    <Label htmlFor="company" className="text-gray-700 dark:text-gray-300">Organization</Label>
+                    <Input id="company" defaultValue="DocuGen AI" />
+                  </div>
+                  <Button className="w-full">Update Profile</Button>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Security Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="currentPassword" className="text-gray-700 dark:text-gray-300">Current Password</Label>
+                    <Input id="currentPassword" type="password" />
+                  </div>
+                  <div>
+                    <Label htmlFor="newPassword" className="text-gray-700 dark:text-gray-300">New Password</Label>
+                    <Input id="newPassword" type="password" />
+                  </div>
+                  <div>
+                    <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">Confirm New Password</Label>
+                    <Input id="confirmPassword" type="password" />
+                  </div>
+                  <Button className="w-full">Change Password</Button>
+                  <hr className="my-4" />
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300">Admin Privileges</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      You have full administrative access to manage document types, users, and system settings.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
 
-        {/* Enhanced Form Modal */}
+        {/* Enhanced Form Modal - Keep existing code */}
         {showForm && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
             <div className="relative top-4 mx-auto p-6 border w-full max-w-4xl shadow-lg rounded-lg bg-white dark:bg-gray-900 mb-8">

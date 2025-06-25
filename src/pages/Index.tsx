@@ -66,7 +66,8 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Create sophisticated prompt for document generation
+      // Step 1: Generate sophisticated prompt using Gemini API
+      console.log('Generating sophisticated prompt...');
       const promptResponse = await fetch('/api/generate-prompt', {
         method: 'POST',
         headers: {
@@ -74,6 +75,7 @@ const Index = () => {
         },
         body: JSON.stringify({
           documentType: selectedDocument.name,
+          documentDescription: selectedDocument.description,
           questions: selectedDocument.questions,
           answers: data,
           signatureRequired: selectedDocument.signatureRequired
@@ -81,48 +83,59 @@ const Index = () => {
       });
 
       if (!promptResponse.ok) {
-        throw new Error('Failed to generate prompt');
+        throw new Error('Failed to generate sophisticated prompt');
       }
 
       const { prompt } = await promptResponse.json();
+      console.log('Sophisticated prompt generated:', prompt);
 
-      // Generate document using the sophisticated prompt
+      // Step 2: Generate document using the sophisticated prompt via Gemini API
+      console.log('Generating document with sophisticated prompt...');
       const documentResponse = await fetch('/api/generate-document', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prompt,
+          sophisticatedPrompt: prompt,
           documentType: selectedDocument.name,
           formData: data,
-          signatures: sigs
+          signatures: sigs,
+          documentMetadata: {
+            id: selectedDocument.id,
+            name: selectedDocument.name,
+            description: selectedDocument.description,
+            signatureRequired: selectedDocument.signatureRequired
+          }
         }),
       });
 
       if (!documentResponse.ok) {
-        throw new Error('Failed to generate document');
+        throw new Error('Failed to generate document with Gemini API');
       }
 
-      const { document } = await documentResponse.json();
+      const { document, documentId } = await documentResponse.json();
+      console.log('Document generated successfully:', { documentId, document });
+      
       setGeneratedDocument(document);
       setCurrentStep('preview');
       
       toast({
         title: "Document Generated Successfully",
-        description: "Your document has been created using AI.",
+        description: `Your ${selectedDocument.name} has been created using advanced AI technology.`,
       });
       
     } catch (error) {
       console.error('Document generation error:', error);
       toast({
         title: "Generation Failed",
-        description: "Failed to generate document. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to generate document. Please try again.",
         variant: "destructive",
       });
       
-      // Fallback to mock generation
-      setGeneratedDocument("This is a mock generated document content...");
+      // Fallback for development/testing
+      const fallbackDoc = `# ${selectedDocument.name}\n\n**Generated on:** ${new Date().toLocaleDateString()}\n\n## Document Details\n\n${Object.entries(data).map(([key, value]) => `**${key}:** ${value}`).join('\n')}\n\n---\n\n*This document was generated using DocuGen AI technology.*`;
+      setGeneratedDocument(fallbackDoc);
       setCurrentStep('preview');
     } finally {
       setIsGenerating(false);
