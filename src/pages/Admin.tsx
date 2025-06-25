@@ -5,7 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Plus, Edit, Trash2, FileText, ArrowLeft, BarChart3, Settings, X } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DocumentType, Question } from './Index';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -14,6 +17,9 @@ interface DocumentTypeForm {
   name: string;
   description: string;
   icon: string;
+  price: string;
+  category: string;
+  colorTheme: string;
   signatureRequired: 'single' | 'dual' | 'none';
   questions: Question[];
 }
@@ -51,12 +57,53 @@ const Admin = () => {
     name: '',
     description: '',
     icon: '',
+    price: '',
+    category: '',
+    colorTheme: 'blue-to-purple',
     signatureRequired: 'none',
     questions: [],
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  const [newQuestion, setNewQuestion] = useState({
+    text: '',
+    type: 'text' as 'text' | 'textarea' | 'select' | 'date' | 'number',
+    required: false,
+    options: [] as string[]
+  });
+
+  const handleInputChange = (field: string, value: any) => {
+    setFormValues({ ...formValues, [field]: value });
+  };
+
+  const handleAddQuestion = () => {
+    if (newQuestion.text.trim()) {
+      const question: Question = {
+        id: Date.now().toString(),
+        text: newQuestion.text,
+        type: newQuestion.type,
+        required: newQuestion.required,
+        options: newQuestion.type === 'select' ? newQuestion.options : undefined
+      };
+      
+      setFormValues({
+        ...formValues,
+        questions: [...formValues.questions, question]
+      });
+      
+      setNewQuestion({
+        text: '',
+        type: 'text',
+        required: false,
+        options: []
+      });
+    }
+  };
+
+  const handleRemoveQuestion = (questionId: string) => {
+    setFormValues({
+      ...formValues,
+      questions: formValues.questions.filter(q => q.id !== questionId)
+    });
   };
 
   const handleAddDocumentType = () => {
@@ -65,6 +112,9 @@ const Admin = () => {
       name: '',
       description: '',
       icon: '',
+      price: '',
+      category: '',
+      colorTheme: 'blue-to-purple',
       signatureRequired: 'none',
       questions: [],
     });
@@ -77,6 +127,9 @@ const Admin = () => {
       name: documentType.name,
       description: documentType.description,
       icon: documentType.icon,
+      price: '',
+      category: '',
+      colorTheme: 'blue-to-purple',
       signatureRequired: documentType.signatureRequired,
       questions: documentType.questions,
     });
@@ -198,70 +251,193 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Form Modal */}
+        {/* Enhanced Form Modal */}
         {showForm && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-            <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white dark:bg-gray-900">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-                {selectedDocument ? 'Edit Document Type' : 'Add Document Type'}
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Name</Label>
-                  <Input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formValues.name}
-                    onChange={handleInputChange}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                    required
-                  />
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div className="relative top-4 mx-auto p-6 border w-full max-w-4xl shadow-lg rounded-lg bg-white dark:bg-gray-900 mb-8">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                  {selectedDocument ? 'Edit Document Type' : 'Add New Document Type'}
+                </h3>
+                <Button variant="ghost" onClick={() => setShowForm(false)}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="title" className="text-gray-700 dark:text-gray-300">Title</Label>
+                    <Input
+                      type="text"
+                      id="title"
+                      value={formValues.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      placeholder="Enter document title"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="price" className="text-gray-700 dark:text-gray-300">Price</Label>
+                    <Input
+                      type="text"
+                      id="price"
+                      value={formValues.price}
+                      onChange={(e) => handleInputChange('price', e.target.value)}
+                      className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      placeholder="Free"
+                    />
+                  </div>
                 </div>
-                <div>
+
+                <div className="space-y-2">
                   <Label htmlFor="description" className="text-gray-700 dark:text-gray-300">Description</Label>
-                  <Input
-                    type="text"
+                  <Textarea
                     id="description"
-                    name="description"
                     value={formValues.description}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                     className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    placeholder="Enter document description"
+                    rows={3}
                     required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="icon" className="text-gray-700 dark:text-gray-300">Icon</Label>
-                  <Input
-                    type="text"
-                    id="icon"
-                    name="icon"
-                    value={formValues.icon}
-                    onChange={handleInputChange}
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                    required
-                  />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="category" className="text-gray-700 dark:text-gray-300">Category</Label>
+                    <Select value={formValues.category} onValueChange={(value) => handleInputChange('category', value)}>
+                      <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="legal">Legal</SelectItem>
+                        <SelectItem value="business">Business</SelectItem>
+                        <SelectItem value="personal">Personal</SelectItem>
+                        <SelectItem value="employment">Employment</SelectItem>
+                        <SelectItem value="real-estate">Real Estate</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="colorTheme" className="text-gray-700 dark:text-gray-300">Color Theme</Label>
+                    <Select value={formValues.colorTheme} onValueChange={(value) => handleInputChange('colorTheme', value)}>
+                      <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                        <SelectValue placeholder="Select color theme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="blue-to-purple">Blue to Purple</SelectItem>
+                        <SelectItem value="green-to-blue">Green to Blue</SelectItem>
+                        <SelectItem value="orange-to-red">Orange to Red</SelectItem>
+                        <SelectItem value="purple-to-pink">Purple to Pink</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="signatureRequired" className="text-gray-700 dark:text-gray-300">Signature Required</Label>
-                  <select
-                    id="signatureRequired"
-                    name="signatureRequired"
-                    value={formValues.signatureRequired}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
-                  >
-                    <option value="none">None</option>
-                    <option value="single">Single</option>
-                    <option value="dual">Dual</option>
-                  </select>
+
+                <div className="space-y-4">
+                  <Label className="text-gray-700 dark:text-gray-300">Signature Settings</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <Switch 
+                        checked={formValues.signatureRequired === 'single'}
+                        onCheckedChange={(checked) => handleInputChange('signatureRequired', checked ? 'single' : 'none')}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">Requires Digital Signature</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Switch 
+                        checked={formValues.signatureRequired === 'dual'}
+                        onCheckedChange={(checked) => handleInputChange('signatureRequired', checked ? 'dual' : 'none')}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">Dual Party Signature (both parties sign)</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="ghost" onClick={() => setShowForm(false)}>
+
+                <div className="space-y-4">
+                  <Label className="text-gray-700 dark:text-gray-300">Questions</Label>
+                  
+                  {/* Add New Question Section */}
+                  <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-4">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300">Add New Question</h4>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-gray-600 dark:text-gray-400">Question</Label>
+                      <Input
+                        value={newQuestion.text}
+                        onChange={(e) => setNewQuestion({...newQuestion, text: e.target.value})}
+                        placeholder="Enter question text"
+                        className="bg-white dark:bg-gray-700"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-gray-600 dark:text-gray-400">Question Type</Label>
+                        <Select value={newQuestion.type} onValueChange={(value: any) => setNewQuestion({...newQuestion, type: value})}>
+                          <SelectTrigger className="bg-white dark:bg-gray-700">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="text">Text Input</SelectItem>
+                            <SelectItem value="textarea">Text Area</SelectItem>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="date">Date</SelectItem>
+                            <SelectItem value="number">Number</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex items-center space-x-2 pt-6">
+                        <Switch 
+                          checked={newQuestion.required}
+                          onCheckedChange={(checked) => setNewQuestion({...newQuestion, required: checked})}
+                        />
+                        <span className="text-gray-600 dark:text-gray-400">Required</span>
+                      </div>
+                    </div>
+
+                    <Button type="button" onClick={handleAddQuestion} className="bg-green-600 hover:bg-green-700">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Question
+                    </Button>
+                  </div>
+
+                  {/* Questions List */}
+                  {formValues.questions.length > 0 && (
+                    <div className="space-y-2">
+                      {formValues.questions.map((question, index) => (
+                        <div key={question.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                          <div>
+                            <span className="font-medium text-gray-700 dark:text-gray-300">{question.text}</span>
+                            <span className="ml-2 text-xs text-gray-500">({question.type})</span>
+                            {question.required && <span className="ml-1 text-red-500">*</span>}
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveQuestion(question.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end space-x-4 pt-6">
+                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit">
-                    {selectedDocument ? 'Update' : 'Create'}
+                  <Button type="submit" className="bg-green-600 hover:bg-green-700">
+                    {selectedDocument ? 'Update Document Type' : 'Create Document Type'}
                   </Button>
                 </div>
               </form>

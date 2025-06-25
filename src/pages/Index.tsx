@@ -7,6 +7,7 @@ import { DocumentPreview } from '@/components/DocumentPreview';
 import { AuthModal } from '@/components/AuthModal';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { useToast } from '@/hooks/use-toast';
 
 export interface DocumentType {
   id: string;
@@ -37,6 +38,8 @@ const Index = () => {
   const [generatedDocument, setGeneratedDocument] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
 
   const handleDocumentSelect = (document: DocumentType) => {
     setSelectedDocument(document);
@@ -58,9 +61,72 @@ const Index = () => {
   };
 
   const generateDocument = async (data: FormData, sigs: { [key: string]: string }) => {
-    // Mock document generation - in real app, this would call your backend
-    setGeneratedDocument("This is a mock generated document content...");
-    setCurrentStep('preview');
+    if (!selectedDocument) return;
+    
+    setIsGenerating(true);
+    
+    try {
+      // Create sophisticated prompt for document generation
+      const promptResponse = await fetch('/api/generate-prompt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          documentType: selectedDocument.name,
+          questions: selectedDocument.questions,
+          answers: data,
+          signatureRequired: selectedDocument.signatureRequired
+        }),
+      });
+
+      if (!promptResponse.ok) {
+        throw new Error('Failed to generate prompt');
+      }
+
+      const { prompt } = await promptResponse.json();
+
+      // Generate document using the sophisticated prompt
+      const documentResponse = await fetch('/api/generate-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          documentType: selectedDocument.name,
+          formData: data,
+          signatures: sigs
+        }),
+      });
+
+      if (!documentResponse.ok) {
+        throw new Error('Failed to generate document');
+      }
+
+      const { document } = await documentResponse.json();
+      setGeneratedDocument(document);
+      setCurrentStep('preview');
+      
+      toast({
+        title: "Document Generated Successfully",
+        description: "Your document has been created using AI.",
+      });
+      
+    } catch (error) {
+      console.error('Document generation error:', error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate document. Please try again.",
+        variant: "destructive",
+      });
+      
+      // Fallback to mock generation
+      setGeneratedDocument("This is a mock generated document content...");
+      setCurrentStep('preview');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDownload = () => {
@@ -111,6 +177,7 @@ const Index = () => {
             onDownload={handleDownload}
             onBack={resetFlow}
             isAuthenticated={isAuthenticated}
+            isGenerating={isGenerating}
           />
         )}
       </main>
