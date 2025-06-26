@@ -1,7 +1,9 @@
 
 import { Button } from '@/components/ui/button';
-import { FileText, User } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { NotificationDropdown } from '@/components/NotificationDropdown';
+import { User, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -9,56 +11,49 @@ interface HeaderProps {
 }
 
 export const Header = ({ isAuthenticated, onAuthClick }: HeaderProps) => {
-  const handleLogoClick = () => {
-    window.location.href = '/';
-  };
+  const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    window.location.href = '/dashboard';
+    navigate('/dashboard');
   };
 
   return (
-    <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-purple-100 dark:border-gray-700 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div 
-            className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={handleLogoClick}
-          >
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg">
-              <FileText className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              DocuGen AI
-            </h1>
+    <header className="border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">D</span>
           </div>
+          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            DocuGen
+          </h1>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
           
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Features</a>
-            <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Pricing</a>
-            <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">About</a>
-            {isAuthenticated && (
-              <a href="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Dashboard</a>
-            )}
-            <a href="/admin" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">Admin</a>
-          </nav>
+          {isAuthenticated && <NotificationDropdown />}
           
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            {isAuthenticated ? (
-              <div 
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
                 onClick={handleProfileClick}
+                className="flex items-center space-x-2"
               >
-                <User className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                <span className="text-purple-700 dark:text-purple-300 font-medium">Profile</span>
-              </div>
-            ) : (
-              <Button onClick={onAuthClick} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all">
-                Sign In
+                <User className="h-4 w-4" />
+                <span>Profile</span>
               </Button>
-            )}
-          </div>
+              <Button variant="ghost" size="sm">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <Button onClick={onAuthClick}>
+              Sign In
+            </Button>
+          )}
         </div>
       </div>
     </header>
