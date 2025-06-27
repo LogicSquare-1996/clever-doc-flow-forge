@@ -1,5 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiClient } from '@/lib/api';
 
 interface SubscriptionContextType {
   isSubscribed: boolean;
@@ -26,16 +26,17 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const checkSubscription = async () => {
     try {
-      // This would call your backend API to check subscription status
-      // For now, we'll simulate the response
       console.log('Checking subscription status...');
-      // const response = await fetch('/api/payments/check-subscription');
-      // const data = await response.json();
-      // setIsSubscribed(data.subscribed);
-      // setSubscriptionTier(data.subscription_tier);
-      // setSubscriptionEnd(data.subscription_end);
+      const response = await apiClient.checkSubscription();
+      setIsSubscribed(response.subscribed);
+      setSubscriptionTier(response.subscription_tier);
+      setSubscriptionEnd(response.subscription_end);
     } catch (error) {
       console.error('Error checking subscription:', error);
+      // If not authenticated, reset subscription status
+      setIsSubscribed(false);
+      setSubscriptionTier(null);
+      setSubscriptionEnd(null);
     }
   };
 
@@ -46,7 +47,11 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   useEffect(() => {
-    checkSubscription();
+    // Only check subscription if user is authenticated
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      checkSubscription();
+    }
   }, []);
 
   return (
