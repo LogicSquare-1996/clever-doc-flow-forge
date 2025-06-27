@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { DocumentTypeSelector } from '@/components/DocumentTypeSelector';
 import { DocumentForm } from '@/components/DocumentForm';
 import { SignatureSection } from '@/components/SignatureSection';
 import { DocumentPreview } from '@/components/DocumentPreview';
 import { AuthModal } from '@/components/AuthModal';
+import { PaymentModal } from '@/components/PaymentModal';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
@@ -37,8 +37,10 @@ const Index = () => {
   const [signatures, setSignatures] = useState<{ [key: string]: string }>({});
   const [generatedDocument, setGeneratedDocument] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasDocumentAccess, setHasDocumentAccess] = useState(false);
   const { toast } = useToast();
 
   const handleDocumentSelect = (document: DocumentType) => {
@@ -120,6 +122,10 @@ const Index = () => {
       setGeneratedDocument(document);
       setCurrentStep('preview');
       
+      // Check if user has access (either authenticated with subscription or has purchased this document)
+      // For now, we'll assume they need to pay unless they're subscribed
+      setHasDocumentAccess(false);
+      
       toast({
         title: "Document Generated Successfully",
         description: `Your ${selectedDocument.name} has been created using advanced AI technology.`,
@@ -145,9 +151,69 @@ const Index = () => {
   const handleDownload = () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
+    } else if (!hasDocumentAccess) {
+      setShowPaymentModal(true);
     } else {
       // Trigger download
       console.log('Downloading document...');
+      toast({
+        title: "Download Started",
+        description: "Your document is being prepared for download.",
+      });
+    }
+  };
+
+  const handlePaymentRequired = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
+
+  const handlePayment = async (type: 'single' | 'subscription', planType?: string) => {
+    try {
+      if (type === 'single') {
+        // Handle single document purchase
+        console.log('Processing single document purchase...');
+        toast({
+          title: "Processing Payment",
+          description: "Redirecting to secure payment page...",
+        });
+        
+        // Simulate payment success for demo
+        setTimeout(() => {
+          setHasDocumentAccess(true);
+          setShowPaymentModal(false);
+          toast({
+            title: "Payment Successful",
+            description: "You now have access to download this document!",
+          });
+        }, 2000);
+      } else {
+        // Handle subscription
+        console.log(`Processing ${planType} subscription...`);
+        toast({
+          title: "Processing Subscription",
+          description: `Setting up your ${planType} plan...`,
+        });
+        
+        // Simulate subscription success for demo
+        setTimeout(() => {
+          setHasDocumentAccess(true);
+          setShowPaymentModal(false);
+          toast({
+            title: "Subscription Active",
+            description: `Welcome to DocuGen ${planType}! You now have unlimited access.`,
+          });
+        }, 2000);
+      }
+    } catch (error) {
+      toast({
+        title: "Payment Failed",
+        description: "There was an issue processing your payment. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -191,6 +257,8 @@ const Index = () => {
             onBack={resetFlow}
             isAuthenticated={isAuthenticated}
             isGenerating={isGenerating}
+            onPaymentRequired={handlePaymentRequired}
+            hasAccess={hasDocumentAccess}
           />
         )}
       </main>
@@ -204,6 +272,15 @@ const Index = () => {
             setIsAuthenticated(true);
             setShowAuthModal(false);
           }}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          documentName={selectedDocument?.name}
+          onPayment={handlePayment}
         />
       )}
     </div>

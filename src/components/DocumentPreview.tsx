@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Eye, RotateCcw, Lock, Loader2 } from 'lucide-react';
+import { Download, Eye, RotateCcw, Lock, Loader2, CreditCard } from 'lucide-react';
 
 interface DocumentPreviewProps {
   content: string;
@@ -9,15 +9,27 @@ interface DocumentPreviewProps {
   onBack: () => void;
   isAuthenticated: boolean;
   isGenerating?: boolean;
+  onPaymentRequired?: () => void;
+  hasAccess?: boolean;
 }
 
-export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, isGenerating = false }: DocumentPreviewProps) => {
+export const DocumentPreview = ({ 
+  content, 
+  onDownload, 
+  onBack, 
+  isAuthenticated, 
+  isGenerating = false,
+  onPaymentRequired,
+  hasAccess = false
+}: DocumentPreviewProps) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Document Preview</h2>
         <p className="text-gray-600">
-          Review your generated document below. {!isAuthenticated && 'Sign in to download the final document.'}
+          Review your generated document below. 
+          {!isAuthenticated && ' Sign in to download the final document.'}
+          {isAuthenticated && !hasAccess && ' Purchase required to download this document.'}
         </p>
       </div>
 
@@ -33,7 +45,31 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, 
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-white border rounded-lg p-8 min-h-96 shadow-inner">
+              <div className="bg-white border rounded-lg p-8 min-h-96 shadow-inner relative">
+                {!hasAccess && !isGenerating && (
+                  <div className="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                    <Card className="max-w-md">
+                      <CardHeader className="text-center">
+                        <Lock className="h-8 w-8 text-amber-600 mx-auto mb-2" />
+                        <CardTitle>Payment Required</CardTitle>
+                      </CardHeader>
+                      <CardContent className="text-center space-y-4">
+                        <p className="text-sm text-gray-600">
+                          To download this document, you need to either purchase it individually or subscribe for unlimited access.
+                        </p>
+                        <Button 
+                          onClick={onPaymentRequired}
+                          className="w-full"
+                          size="lg"
+                        >
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          Choose Payment Option
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+                
                 <div className="prose max-w-none">
                   <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
                     {isGenerating ? (
@@ -61,7 +97,7 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, 
               <CardTitle>Download Options</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isAuthenticated ? (
+              {hasAccess ? (
                 <>
                   <Button 
                     onClick={onDownload} 
@@ -87,19 +123,29 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, 
                   <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                     <Lock className="h-8 w-8 text-amber-600 mx-auto mb-2" />
                     <p className="text-sm text-amber-800 font-medium">
-                      Sign in required to download
+                      {!isAuthenticated ? 'Sign in required to download' : 'Payment required to download'}
                     </p>
                     <p className="text-xs text-amber-700 mt-1">
-                      Create a free account to access your documents
+                      {!isAuthenticated 
+                        ? 'Create a free account to access your documents' 
+                        : 'Purchase this document or subscribe for unlimited access'
+                      }
                     </p>
                   </div>
                   <Button 
-                    onClick={onDownload} 
+                    onClick={!isAuthenticated ? onDownload : onPaymentRequired} 
                     className="w-full"
                     size="lg"
                     disabled={isGenerating}
                   >
-                    Sign In to Download
+                    {!isAuthenticated ? (
+                      'Sign In to Download'
+                    ) : (
+                      <>
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Purchase Document
+                      </>
+                    )}
                   </Button>
                 </div>
               )}
@@ -122,8 +168,8 @@ export const DocumentPreview = ({ content, onDownload, onBack, isAuthenticated, 
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Status:</span>
-                <span className={`font-medium ${isGenerating ? 'text-orange-600' : 'text-green-600'}`}>
-                  {isGenerating ? 'Generating...' : 'Ready'}
+                <span className={`font-medium ${isGenerating ? 'text-orange-600' : hasAccess ? 'text-green-600' : 'text-amber-600'}`}>
+                  {isGenerating ? 'Generating...' : hasAccess ? 'Ready' : 'Payment Required'}
                 </span>
               </div>
             </CardContent>
