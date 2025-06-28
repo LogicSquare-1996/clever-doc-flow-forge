@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { FileText, Shield, Users, Building, Heart, Car } from 'lucide-react';
 import { DocumentType } from '@/pages/Index';
 import { apiClient } from '@/lib/api';
@@ -59,15 +60,15 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
 
   const getIcon = (iconName: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
-      '📄': <FileText className="h-8 w-8 text-blue-600" />,
-      '🔒': <Shield className="h-8 w-8 text-green-600" />,
-      '👥': <Users className="h-8 w-8 text-purple-600" />,
-      '🏢': <Building className="h-8 w-8 text-orange-600" />,
-      '❤️': <Heart className="h-8 w-8 text-red-600" />,
-      '🚗': <Car className="h-8 w-8 text-cyan-600" />
+      '📄': <FileText className="h-8 w-8 text-purple-400" />,
+      '🔒': <Shield className="h-8 w-8 text-purple-400" />,
+      '👥': <Users className="h-8 w-8 text-purple-400" />,
+      '🏢': <Building className="h-8 w-8 text-purple-400" />,
+      '❤️': <Heart className="h-8 w-8 text-purple-400" />,
+      '🚗': <Car className="h-8 w-8 text-purple-400" />
     };
     
-    return iconMap[iconName] || <FileText className="h-8 w-8 text-gray-600" />;
+    return iconMap[iconName] || <FileText className="h-8 w-8 text-purple-400" />;
   };
 
   if (loading) {
@@ -89,40 +90,54 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {documentTypes.map((doc) => (
-          <Card key={doc.id} className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-purple-300 cursor-pointer transform hover:-translate-y-1">
-            <CardHeader className="text-center pb-4">
+          <Card 
+            key={doc.id} 
+            className="group hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 bg-slate-800/90 border-slate-700 text-white relative overflow-hidden"
+            onClick={() => onSelect(doc)}
+          >
+            <CardHeader className="text-center pb-4 relative z-10">
               <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform">
-                {getIcon(doc.icon)}
+                <div className="p-3 rounded-xl bg-purple-600/20 backdrop-blur-sm">
+                  {getIcon(doc.icon)}
+                </div>
               </div>
-              <CardTitle className="text-xl mb-2">{doc.name}</CardTitle>
-              <CardDescription className="text-sm">{doc.description}</CardDescription>
+              <CardTitle className="text-lg mb-2 text-white">{doc.name}</CardTitle>
+              <CardDescription className="text-sm text-slate-300 leading-relaxed">
+                {doc.description}
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                  {doc.questions.length} questions to complete
-                </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                  {doc.signatureRequired === 'dual' ? 'Dual signatures required' : 
-                   doc.signatureRequired === 'single' ? 'Single signature required' : 
-                   'No signature required'}
-                </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <span className="inline-block w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                  Professional template
-                </div>
+            
+            <CardContent className="pt-0 relative z-10">
+              <div className="flex flex-wrap gap-2 justify-center mb-4">
+                <Badge 
+                  variant="secondary" 
+                  className="bg-slate-700/50 text-white border-slate-600 text-xs px-2 py-1"
+                >
+                  {doc.questions.length} questions
+                </Badge>
+                
+                <Badge 
+                  variant="secondary" 
+                  className="bg-purple-600/20 text-purple-300 border-purple-500/30 text-xs px-2 py-1"
+                >
+                  {doc.signatureRequired === 'dual' ? '2 Signatures' : 
+                   doc.signatureRequired === 'single' ? '1 Signature' : 
+                   'No Signature'}
+                </Badge>
               </div>
+              
               <Button 
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-colors shadow-lg"
                 onClick={() => onSelect(doc)}
-                className="w-full group-hover:bg-purple-600 group-hover:text-white transition-colors"
               >
                 Get Started
               </Button>
             </CardContent>
+            
+            {/* Background gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Card>
         ))}
       </div>
