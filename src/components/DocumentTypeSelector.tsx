@@ -25,159 +25,123 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
         // Fallback to default templates
         setDocumentTypes([
           {
-            id: 'employment-agreement',
-            name: 'Employment Agreement',
-            description: 'Comprehensive employment contract template',
-            icon: '📄',
-            questions: [
-              { id: 'employeeName', text: 'Employee Full Name', type: 'text', required: true },
-              { id: 'position', text: 'Job Position', type: 'text', required: true },
-              { id: 'salary', text: 'Annual Salary', type: 'number', required: true },
-              { id: 'startDate', text: 'Start Date', type: 'date', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'nda',
-            name: 'Non-Disclosure Agreement',
-            description: 'Protect confidential information',
-            icon: '🔒',
-            questions: [
-              { id: 'disclosingParty', text: 'Disclosing Party Name', type: 'text', required: true },
-              { id: 'receivingParty', text: 'Receiving Party Name', type: 'text', required: true },
-              { id: 'purposeDescription', text: 'Purpose Description', type: 'textarea', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'service-agreement',
-            name: 'Service Agreement',
-            description: 'Professional service contract template',
-            icon: '👥',
-            questions: [
-              { id: 'serviceProvider', text: 'Service Provider Name', type: 'text', required: true },
-              { id: 'clientName', text: 'Client Name', type: 'text', required: true },
-              { id: 'serviceDescription', text: 'Service Description', type: 'textarea', required: true },
-              { id: 'paymentTerms', text: 'Payment Terms', type: 'text', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'rental-agreement',
-            name: 'Rental Agreement',
-            description: 'Property rental contract template',
-            icon: '🏢',
+            id: 'rent-agreement',
+            name: 'Rent Agreement',
+            description: 'Comprehensive rental agreements for residential and commercial properties',
+            icon: 'building',
             questions: [
               { id: 'landlordName', text: 'Landlord Name', type: 'text', required: true },
               { id: 'tenantName', text: 'Tenant Name', type: 'text', required: true },
               { id: 'propertyAddress', text: 'Property Address', type: 'textarea', required: true },
-              { id: 'monthlyRent', text: 'Monthly Rent', type: 'number', required: true }
+              { id: 'monthlyRent', text: 'Monthly Rent', type: 'number', required: true },
+              { id: 'leaseTerm', text: 'Lease Term', type: 'text', required: true },
+              { id: 'securityDeposit', text: 'Security Deposit', type: 'number', required: true }
             ],
             signatureRequired: 'dual'
           },
           {
-            id: 'partnership-agreement',
-            name: 'Partnership Agreement',
-            description: 'Business partnership contract',
-            icon: '❤️',
+            id: 'offer-letter',
+            name: 'Offer Letter',
+            description: 'Professional job offer letters with compensation details',
+            icon: 'briefcase',
             questions: [
-              { id: 'partner1Name', text: 'Partner 1 Name', type: 'text', required: true },
-              { id: 'partner2Name', text: 'Partner 2 Name', type: 'text', required: true },
-              { id: 'businessName', text: 'Business Name', type: 'text', required: true },
-              { id: 'profitSharing', text: 'Profit Sharing Terms', type: 'textarea', required: true }
+              { id: 'candidateName', text: 'Candidate Name', type: 'text', required: true },
+              { id: 'position', text: 'Job Position', type: 'text', required: true },
+              { id: 'salary', text: 'Annual Salary', type: 'number', required: true },
+              { id: 'startDate', text: 'Start Date', type: 'date', required: true },
+              { id: 'reportingManager', text: 'Reporting Manager', type: 'text', required: true },
+              { id: 'benefits', text: 'Benefits Package', type: 'textarea', required: true }
             ],
-            signatureRequired: 'dual'
+            signatureRequired: 'single'
           },
           {
-            id: 'sales-agreement',
-            name: 'Sales Agreement',
-            description: 'Product or asset sale contract',
-            icon: '🚗',
+            id: 'non-disclosure-agreement',
+            name: 'Non-Disclosure Agreement',
+            description: 'Protect confidential information with professional NDAs',
+            icon: 'shield',
             questions: [
-              { id: 'sellerName', text: 'Seller Name', type: 'text', required: true },
-              { id: 'buyerName', text: 'Buyer Name', type: 'text', required: true },
-              { id: 'itemDescription', text: 'Item Description', type: 'textarea', required: true },
-              { id: 'salePrice', text: 'Sale Price', type: 'number', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'loan-agreement',
-            name: 'Loan Agreement',
-            description: 'Personal or business loan contract',
-            icon: '💰',
-            questions: [
-              { id: 'lenderName', text: 'Lender Name', type: 'text', required: true },
-              { id: 'borrowerName', text: 'Borrower Name', type: 'text', required: true },
-              { id: 'loanAmount', text: 'Loan Amount', type: 'number', required: true },
-              { id: 'interestRate', text: 'Interest Rate (%)', type: 'number', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'freelance-contract',
-            name: 'Freelance Contract',
-            description: 'Independent contractor agreement',
-            icon: '💼',
-            questions: [
-              { id: 'freelancerName', text: 'Freelancer Name', type: 'text', required: true },
-              { id: 'clientCompany', text: 'Client Company', type: 'text', required: true },
-              { id: 'projectScope', text: 'Project Scope', type: 'textarea', required: true },
-              { id: 'hourlyRate', text: 'Hourly Rate', type: 'number', required: true }
-            ],
-            signatureRequired: 'dual'
-          },
-          {
-            id: 'power-of-attorney',
-            name: 'Power of Attorney',
-            description: 'Legal authority delegation document',
-            icon: '⚖️',
-            questions: [
-              { id: 'principalName', text: 'Principal Name', type: 'text', required: true },
-              { id: 'agentName', text: 'Agent Name', type: 'text', required: true },
-              { id: 'authorityScope', text: 'Authority Scope', type: 'textarea', required: true },
+              { id: 'disclosingParty', text: 'Disclosing Party Name', type: 'text', required: true },
+              { id: 'receivingParty', text: 'Receiving Party Name', type: 'text', required: true },
+              { id: 'purposeDescription', text: 'Purpose Description', type: 'textarea', required: true },
+              { id: 'duration', text: 'Agreement Duration', type: 'text', required: true },
               { id: 'effectiveDate', text: 'Effective Date', type: 'date', required: true }
             ],
-            signatureRequired: 'single'
+            signatureRequired: 'dual'
           },
           {
-            id: 'will-testament',
-            name: 'Will & Testament',
-            description: 'Last will and testament document',
-            icon: '📋',
+            id: 'founders-agreement',
+            name: "Founders' Agreement",
+            description: 'Establish clear terms between startup co-founders',
+            icon: 'users',
             questions: [
-              { id: 'testatorName', text: 'Testator Name', type: 'text', required: true },
-              { id: 'executorName', text: 'Executor Name', type: 'text', required: true },
-              { id: 'beneficiaries', text: 'Beneficiaries', type: 'textarea', required: true },
-              { id: 'assetDistribution', text: 'Asset Distribution', type: 'textarea', required: true }
-            ],
-            signatureRequired: 'single'
-          },
-          {
-            id: 'consulting-agreement',
-            name: 'Consulting Agreement',
-            description: 'Professional consulting services contract',
-            icon: '👤',
-            questions: [
-              { id: 'consultantName', text: 'Consultant Name', type: 'text', required: true },
-              { id: 'clientCompanyName', text: 'Client Company', type: 'text', required: true },
-              { id: 'consultingServices', text: 'Consulting Services', type: 'textarea', required: true },
-              { id: 'consultingFee', text: 'Consulting Fee', type: 'number', required: true }
+              { id: 'founder1Name', text: 'Founder 1 Name', type: 'text', required: true },
+              { id: 'founder2Name', text: 'Founder 2 Name', type: 'text', required: true },
+              { id: 'companyName', text: 'Company Name', type: 'text', required: true },
+              { id: 'equityDistribution', text: 'Equity Distribution', type: 'textarea', required: true },
+              { id: 'roles', text: 'Roles and Responsibilities', type: 'textarea', required: true },
+              { id: 'vestingSchedule', text: 'Vesting Schedule', type: 'textarea', required: true }
             ],
             signatureRequired: 'dual'
           },
           {
-            id: 'licensing-agreement',
-            name: 'Licensing Agreement',
-            description: 'Intellectual property licensing contract',
-            icon: '🌐',
+            id: 'employment-contract',
+            name: 'Employment Contract',
+            description: 'Detailed employment contracts with terms and conditions',
+            icon: 'file-text',
             questions: [
-              { id: 'licensorName', text: 'Licensor Name', type: 'text', required: true },
-              { id: 'licenseeName', text: 'Licensee Name', type: 'text', required: true },
-              { id: 'intellectualProperty', text: 'Intellectual Property', type: 'textarea', required: true },
-              { id: 'royaltyRate', text: 'Royalty Rate (%)', type: 'number', required: true }
+              { id: 'employeeName', text: 'Employee Full Name', type: 'text', required: true },
+              { id: 'position', text: 'Job Position', type: 'text', required: true },
+              { id: 'salary', text: 'Annual Salary', type: 'number', required: true },
+              { id: 'workingHours', text: 'Working Hours', type: 'text', required: true },
+              { id: 'probationPeriod', text: 'Probation Period', type: 'text', required: true },
+              { id: 'benefits', text: 'Employee Benefits', type: 'textarea', required: true }
             ],
             signatureRequired: 'dual'
+          },
+          {
+            id: 'freelance-invoice',
+            name: 'Freelance Invoice',
+            description: 'Professional invoices for freelance services',
+            icon: 'file-check',
+            questions: [
+              { id: 'freelancerName', text: 'Freelancer Name', type: 'text', required: true },
+              { id: 'clientName', text: 'Client Name', type: 'text', required: true },
+              { id: 'serviceDescription', text: 'Service Description', type: 'textarea', required: true },
+              { id: 'amount', text: 'Invoice Amount', type: 'number', required: true },
+              { id: 'dueDate', text: 'Payment Due Date', type: 'date', required: true },
+              { id: 'paymentTerms', text: 'Payment Terms', type: 'text', required: true }
+            ],
+            signatureRequired: 'none'
+          },
+          {
+            id: 'pitch-deck-outline',
+            name: 'Pitch Deck Outline',
+            description: 'Basic structure and content outline for investor pitch decks',
+            icon: 'presentation',
+            questions: [
+              { id: 'companyName', text: 'Company Name', type: 'text', required: true },
+              { id: 'problemStatement', text: 'Problem Statement', type: 'textarea', required: true },
+              { id: 'solution', text: 'Solution Description', type: 'textarea', required: true },
+              { id: 'marketSize', text: 'Market Size', type: 'text', required: true },
+              { id: 'businessModel', text: 'Business Model', type: 'textarea', required: true },
+              { id: 'fundingAmount', text: 'Funding Amount Sought', type: 'number', required: true }
+            ],
+            signatureRequired: 'none'
+          },
+          {
+            id: 'gst-registration-support',
+            name: 'GST Registration Support',
+            description: 'Supporting documents and forms for GST registration',
+            icon: 'calculator',
+            questions: [
+              { id: 'businessName', text: 'Business Name', type: 'text', required: true },
+              { id: 'businessType', text: 'Business Type', type: 'select', options: ['Proprietorship', 'Partnership', 'Private Limited', 'Public Limited'], required: true },
+              { id: 'panNumber', text: 'PAN Number', type: 'text', required: true },
+              { id: 'businessAddress', text: 'Business Address', type: 'textarea', required: true },
+              { id: 'turnover', text: 'Expected Annual Turnover', type: 'number', required: true },
+              { id: 'hsn', text: 'HSN/SAC Codes', type: 'textarea', required: true }
+            ],
+            signatureRequired: 'single'
           }
         ]);
       } finally {
@@ -190,22 +154,17 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
 
   const getIcon = (iconName: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
-      '📄': <FileText className="h-8 w-8 text-white" />,
-      '🔒': <Shield className="h-8 w-8 text-white" />,
-      '👥': <Users className="h-8 w-8 text-white" />,
-      '🏢': <Building className="h-8 w-8 text-white" />,
-      '❤️': <Heart className="h-8 w-8 text-white" />,
-      '🚗': <Car className="h-8 w-8 text-white" />,
-      '🏠': <Home className="h-8 w-8 text-white" />,
-      '💼': <Briefcase className="h-8 w-8 text-white" />,
-      '⚖️': <Scale className="h-8 w-8 text-white" />,
-      '📋': <FileCheck className="h-8 w-8 text-white" />,
-      '👤': <UserCheck className="h-8 w-8 text-white" />,
-      '🌐': <Globe className="h-8 w-8 text-white" />,
-      '💰': <FileText className="h-8 w-8 text-white" />
+      'building': <Building className="h-6 w-6" />,
+      'briefcase': <Briefcase className="h-6 w-6" />,
+      'shield': <Shield className="h-6 w-6" />,
+      'users': <Users className="h-6 w-6" />,
+      'file-text': <FileText className="h-6 w-6" />,
+      'file-check': <FileCheck className="h-6 w-6" />,
+      'presentation': <FileText className="h-6 w-6" />,
+      'calculator': <Scale className="h-6 w-6" />
     };
     
-    return iconMap[iconName] || <FileText className="h-8 w-8 text-white" />;
+    return iconMap[iconName] || <FileText className="h-6 w-6" />;
   };
 
   if (loading) {
@@ -231,50 +190,48 @@ export const DocumentTypeSelector = ({ onSelect }: DocumentTypeSelectorProps) =>
         {documentTypes.map((doc) => (
           <Card 
             key={doc.id} 
-            className="group hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 bg-slate-900 border-slate-700 text-white relative overflow-hidden h-[280px] flex flex-col"
+            className="group hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 relative overflow-hidden"
             onClick={() => onSelect(doc)}
           >
-            <CardHeader className="text-center pb-4 relative z-10 flex-1">
-              <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform">
-                <div className="p-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500">
+            <CardHeader className="pb-4">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="p-3 rounded-xl bg-purple-600 text-white flex-shrink-0">
                   {getIcon(doc.icon)}
                 </div>
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="text-lg mb-2 text-gray-900 dark:text-white font-semibold leading-tight">
+                    {doc.name}
+                  </CardTitle>
+                </div>
               </div>
-              <CardTitle className="text-lg mb-2 text-white font-semibold">{doc.name}</CardTitle>
-              <CardDescription className="text-sm text-slate-300 leading-relaxed line-clamp-3">
+              <CardDescription className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {doc.description}
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="pt-0 relative z-10 mt-auto">
-              <div className="flex flex-wrap gap-2 justify-center mb-4">
+            <CardContent className="pt-0">
+              <div className="flex flex-wrap gap-2 mb-4">
                 <Badge 
                   variant="secondary" 
-                  className="bg-slate-700/50 text-white border-slate-600 text-xs px-2 py-1"
+                  className="bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border-0 text-xs px-3 py-1 rounded-full"
                 >
                   {doc.questions.length} questions
                 </Badge>
                 
                 <Badge 
                   variant="secondary" 
-                  className="bg-purple-600/20 text-purple-300 border-purple-500/30 text-xs px-2 py-1"
+                  className={`border-0 text-xs px-3 py-1 rounded-full ${
+                    doc.signatureRequired === 'dual' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' :
+                    doc.signatureRequired === 'single' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300' :
+                    'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-400'
+                  }`}
                 >
                   {doc.signatureRequired === 'dual' ? '2 Signatures' : 
                    doc.signatureRequired === 'single' ? '1 Signature' : 
                    'No Signature'}
                 </Badge>
               </div>
-              
-              <Button 
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white transition-all shadow-lg border-0"
-                onClick={() => onSelect(doc)}
-              >
-                Get Started
-              </Button>
             </CardContent>
-            
-            {/* Background gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Card>
         ))}
       </div>
