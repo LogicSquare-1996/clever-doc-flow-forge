@@ -166,6 +166,10 @@ const Admin = () => {
     setShowForm(false);
   };
 
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  };
+
   // Admin user data
   const adminInfo = {
     name: 'Admin User',
@@ -181,12 +185,12 @@ const Admin = () => {
       <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-purple-100 dark:border-gray-700 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg">
-                <FileText className="h-8 w-8 text-white" />
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={handleLogoClick}>
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">D</span>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                DocuGen AI - Admin
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                DocuGen
               </h1>
             </div>
             
