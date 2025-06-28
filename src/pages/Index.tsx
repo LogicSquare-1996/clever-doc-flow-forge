@@ -8,7 +8,6 @@ import { PaymentModal } from '@/components/PaymentModal';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
-import { apiClient } from '@/lib/api';
 
 export interface DocumentType {
   id: string;
@@ -37,10 +36,9 @@ const Index = () => {
   const [formData, setFormData] = useState<FormData>({});
   const [signatures, setSignatures] = useState<{ [key: string]: string }>({});
   const [generatedDocument, setGeneratedDocument] = useState<string | null>(null);
-  const [documentId, setDocumentId] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasDocumentAccess, setHasDocumentAccess] = useState(false);
   const { toast } = useToast();
@@ -70,42 +68,62 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Step 1: Generate sophisticated prompt
+      // Step 1: Generate sophisticated prompt using Gemini API
       console.log('Generating sophisticated prompt...');
-      const promptResponse = await apiClient.generatePrompt({
-        documentType: selectedDocument.name,
-        documentDescription: selectedDocument.description,
-        questions: selectedDocument.questions,
-        answers: data,
-        signatureRequired: selectedDocument.signatureRequired
-      });
-
-      console.log('Sophisticated prompt generated:', promptResponse.prompt);
-
-      // Step 2: Generate document using the sophisticated prompt
-      console.log('Generating document with sophisticated prompt...');
-      const documentResponse = await apiClient.generateDocument({
-        sophisticatedPrompt: promptResponse.prompt,
-        documentType: selectedDocument.name,
-        formData: data,
-        signatures: sigs,
-        documentMetadata: {
-          id: selectedDocument.id,
-          name: selectedDocument.name,
-          description: selectedDocument.description,
-          signatureRequired: selectedDocument.signatureRequired
+      const promptResponse = await fetch('/api/generate-prompt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        userId: isAuthenticated ? 'current_user' : null,
-        guestEmail: !isAuthenticated ? 'guest@example.com' : null
+        body: JSON.stringify({
+          documentType: selectedDocument.name,
+          documentDescription: selectedDocument.description,
+          questions: selectedDocument.questions,
+          answers: data,
+          signatureRequired: selectedDocument.signatureRequired
+        }),
       });
 
-      console.log('Document generated successfully:', documentResponse);
+      if (!promptResponse.ok) {
+        throw new Error('Failed to generate sophisticated prompt');
+      }
+
+      const { prompt } = await promptResponse.json();
+      console.log('Sophisticated prompt generated:', prompt);
+
+      // Step 2: Generate document using the sophisticated prompt via Gemini API
+      console.log('Generating document with sophisticated prompt...');
+      const documentResponse = await fetch('/api/generate-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sophisticatedPrompt: prompt,
+          documentType: selectedDocument.name,
+          formData: data,
+          signatures: sigs,
+          documentMetadata: {
+            id: selectedDocument.id,
+            name: selectedDocument.name,
+            description: selectedDocument.description,
+            signatureRequired: selectedDocument.signatureRequired
+          }
+        }),
+      });
+
+      if (!documentResponse.ok) {
+        throw new Error('Failed to generate document with Gemini API');
+      }
+
+      const { document, documentId } = await documentResponse.json();
+      console.log('Document generated successfully:', { documentId, document });
       
-      setGeneratedDocument(documentResponse.document);
-      setDocumentId(documentResponse.documentId);
+      setGeneratedDocument(document);
       setCurrentStep('preview');
       
-      // For now, users need to pay unless they have active subscription
+      // Check if user has access (either authenticated with subscription or has purchased this document)
+      // For now, we'll assume they need to pay unless they're subscribed
       setHasDocumentAccess(false);
       
       toast({
@@ -130,45 +148,18 @@ const Index = () => {
     }
   };
 
-  const handleDownload = async () => {
-    if (!documentId) return;
-
+  const handleDownload = () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
-      return;
-    }
-
-    try {
-      const response = await apiClient.downloadDocument(documentId);
-      
-      if (response.success) {
-        // Create and trigger download
-        const blob = new Blob([response.document], { type: 'text/markdown' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `${selectedDocument?.name || 'document'}.md`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        toast({
-          title: "Download Started",
-          description: "Your document is being downloaded.",
-        });
-      }
-    } catch (error) {
-      // If access denied, show payment modal
-      if (error instanceof Error && error.message.includes('Access denied')) {
-        setShowPaymentModal(true);
-      } else {
-        toast({
-          title: "Download Failed",
-          description: error instanceof Error ? error.message : "Failed to download document.",
-          variant: "destructive",
-        });
-      }
+    } else if (!hasDocumentAccess) {
+      setShowPaymentModal(true);
+    } else {
+      // Trigger download
+      console.log('Downloading document...');
+      toast({
+        title: "Download Started",
+        description: "Your document is being prepared for download.",
+      });
     }
   };
 
@@ -181,24 +172,16 @@ const Index = () => {
   };
 
   const handlePayment = async (type: 'single' | 'subscription', planType?: string) => {
-    if (!documentId) return;
-
     try {
       if (type === 'single') {
         // Handle single document purchase
         console.log('Processing single document purchase...');
-        const response = await apiClient.createSinglePayment(
-          documentId, 
-          !isAuthenticated ? 'guest@example.com' : undefined
-        );
-        
         toast({
           title: "Processing Payment",
           description: "Redirecting to secure payment page...",
         });
         
-        // Here you would integrate with Stripe Elements or redirect to Stripe Checkout
-        // For demo purposes, simulate success
+        // Simulate payment success for demo
         setTimeout(() => {
           setHasDocumentAccess(true);
           setShowPaymentModal(false);
@@ -210,16 +193,25 @@ const Index = () => {
       } else {
         // Handle subscription
         console.log(`Processing ${planType} subscription...`);
-        const response = await apiClient.createSubscription(planType!);
+        toast({
+          title: "Processing Subscription",
+          description: `Setting up your ${planType} plan...`,
+        });
         
-        if (response.url) {
-          window.location.href = response.url;
-        }
+        // Simulate subscription success for demo
+        setTimeout(() => {
+          setHasDocumentAccess(true);
+          setShowPaymentModal(false);
+          toast({
+            title: "Subscription Active",
+            description: `Welcome to DocuGen ${planType}! You now have unlimited access.`,
+          });
+        }, 2000);
       }
     } catch (error) {
       toast({
         title: "Payment Failed",
-        description: error instanceof Error ? error.message : "There was an issue processing your payment. Please try again.",
+        description: "There was an issue processing your payment. Please try again.",
         variant: "destructive",
       });
     }

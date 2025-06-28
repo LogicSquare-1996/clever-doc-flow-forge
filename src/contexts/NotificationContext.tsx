@@ -1,5 +1,5 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { apiClient } from '@/lib/api';
 
 export interface Notification {
   _id: string;
@@ -30,22 +30,28 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
   const fetchNotifications = async () => {
     try {
-      const data = await apiClient.getNotifications();
-      setNotifications(data);
+      const response = await fetch('/api/notifications');
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      }
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
-      setNotifications([]);
     }
   };
 
   const markAsRead = async (id: string) => {
     try {
-      await apiClient.markNotificationAsRead(id);
-      setNotifications(prev =>
-        prev.map(notif =>
-          notif._id === id ? { ...notif, isRead: true, readAt: new Date().toISOString() } : notif
-        )
-      );
+      const response = await fetch(`/api/notifications/${id}/read`, {
+        method: 'PUT',
+      });
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.map(notif =>
+            notif._id === id ? { ...notif, isRead: true, readAt: new Date().toISOString() } : notif
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
     }
@@ -53,10 +59,14 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
   const markAllAsRead = async () => {
     try {
-      await apiClient.markAllNotificationsAsRead();
-      setNotifications(prev =>
-        prev.map(notif => ({ ...notif, isRead: true, readAt: new Date().toISOString() }))
-      );
+      const response = await fetch('/api/notifications/mark-all-read', {
+        method: 'PUT',
+      });
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.map(notif => ({ ...notif, isRead: true, readAt: new Date().toISOString() }))
+        );
+      }
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
     }
@@ -64,8 +74,12 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
   const deleteNotification = async (id: string) => {
     try {
-      await apiClient.deleteNotification(id);
-      setNotifications(prev => prev.filter(notif => notif._id !== id));
+      const response = await fetch(`/api/notifications/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setNotifications(prev => prev.filter(notif => notif._id !== id));
+      }
     } catch (error) {
       console.error('Failed to delete notification:', error);
     }
@@ -74,11 +88,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const unreadCount = notifications.filter(notif => !notif.isRead).length;
 
   useEffect(() => {
-    // Only fetch notifications if user is authenticated
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      fetchNotifications();
-    }
+    fetchNotifications();
   }, []);
 
   return (
